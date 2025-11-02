@@ -1,13 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CODM Config Manager - Nulltra Coder</title>
-    
-    <!-- Telegram Web App SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -15,28 +11,28 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
-            padding: 10px;
+            padding: 20px;
             min-height: 100vh;
         }
         
         .container {
-            max-width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
             background: rgba(26, 26, 26, 0.95);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         
         header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
             border-bottom: 3px solid #ff6b6b;
-            padding-bottom: 15px;
+            padding-bottom: 20px;
         }
         
         h1 {
-            font-size: 1.8em;
+            font-size: 2.5em;
             background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -45,45 +41,52 @@
         
         .creator {
             color: #4ecdc4;
-            font-size: 0.9em;
+            font-size: 1.1em;
         }
         
         .creator a {
             color: #ffd93d;
             text-decoration: none;
+            transition: 0.3s;
+        }
+        
+        .creator a:hover {
+            text-decoration: underline;
         }
         
         .tabs {
             display: flex;
-            gap: 5px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
-            overflow-x: auto;
         }
         
         .tab {
-            padding: 10px 15px;
+            padding: 12px 24px;
             background: #2a2a2a;
             border: none;
             border-radius: 8px;
             color: #fff;
             cursor: pointer;
-            font-size: 0.85em;
+            font-size: 1em;
             transition: 0.3s;
-            white-space: nowrap;
+            flex: 1;
+            min-width: 150px;
         }
         
         .tab:hover {
             background: #3a3a3a;
+            transform: translateY(-2px);
         }
         
         .tab.active {
             background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
         }
         
         .tab-content {
             display: none;
-            animation: fadeIn 0.3s;
+            animation: fadeIn 0.5s;
         }
         
         .tab-content.active {
@@ -95,12 +98,24 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
         .config-item {
             background: #2a2a2a;
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 20px;
             border-radius: 10px;
             border-left: 4px solid #4ecdc4;
+            transition: 0.3s;
+        }
+        
+        .config-item:hover {
+            transform: translateX(5px);
+            border-left-color: #ff6b6b;
         }
         
         .config-item label {
@@ -108,7 +123,7 @@
             color: #4ecdc4;
             font-weight: bold;
             margin-bottom: 8px;
-            font-size: 0.85em;
+            font-size: 0.9em;
         }
         
         .config-item input,
@@ -120,35 +135,37 @@
             color: #fff;
             border-radius: 5px;
             font-size: 1em;
+            transition: 0.3s;
         }
         
         .config-item input:focus,
         .config-item select:focus {
             outline: none;
             border-color: #ff6b6b;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.2);
         }
         
         .action-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
         }
         
         .btn {
-            padding: 15px 20px;
+            padding: 15px 30px;
             border: none;
             border-radius: 10px;
-            font-size: 1em;
+            font-size: 1.1em;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
-            width: 100%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
         
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
         
         .btn-primary {
@@ -162,17 +179,21 @@
         }
         
         .btn-warning {
-            background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+            background: linear-gradient(135deg, #ffd93d, #ffb347);
+            color: #1a1a1a;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
         }
         
         .status {
-            margin-top: 15px;
+            margin-top: 20px;
             padding: 15px;
             background: #2a2a2a;
             border-radius: 10px;
             text-align: center;
-            font-size: 0.9em;
         }
         
         .status.success {
@@ -187,127 +208,211 @@
 <body>
     <div class="container">
         <header>
-            <h1>🎮 CODM Config</h1>
-            <p class="creator">By: <a href="https://t.me/im_nulltra">Nulltra Coder</a></p>
+            <h1>🎮 CODM Config Manager</h1>
+            <p class="creator">Created by: <a href="https://t.me/im_nulltra">Nulltra Coder</a></p>
+            <p style="color: #888; margin-top: 10px;">Call of Duty Mobile Performance Configurator</p>
         </header>
         
         <div class="tabs">
-            <button class="tab active" data-tab="aim">🎯 Aim</button>
-            <button class="tab" data-tab="movement">🏃 Move</button>
+            <button class="tab active" data-tab="aim">🎯 Aim & Lock</button>
+            <button class="tab" data-tab="movement">🏃 Movement</button>
             <button class="tab" data-tab="graphics">🖼️ Graphics</button>
-            <button class="tab" data-tab="network">📡 Net</button>
+            <button class="tab" data-tab="network">📡 Network</button>
+            <button class="tab" data-tab="advanced">⚙️ Advanced</button>
         </div>
         
         <form id="configForm">
-            <!-- AIM TAB -->
+            <!-- AIM & LOCK TAB -->
             <div class="tab-content active" id="aim">
-                <div class="config-item">
-                    <label>Aim Sensitivity</label>
-                    <input type="number" name="Aim_Sensitivity" value="120" min="1" max="300">
-                </div>
-                <div class="config-item">
-                    <label>ADS Sensitivity</label>
-                    <input type="number" name="ADS_Sensitivity" value="80" min="1" max="200">
-                </div>
-                <div class="config-item">
-                    <label>Aim Assist</label>
-                    <select name="Aim_Assist">
-                        <option value="Off">Off</option>
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Strong" selected>Strong</option>
-                    </select>
-                </div>
-                <div class="config-item">
-                    <label>Headshot Priority</label>
-                    <select name="Headshot_Priority">
-                        <option value="Off">Off</option>
-                        <option value="On" selected>On</option>
-                    </select>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <label>Aim Sensitivity</label>
+                        <input type="number" name="Aim_Sensitivity" value="120" min="1" max="300">
+                    </div>
+                    <div class="config-item">
+                        <label>ADS Sensitivity</label>
+                        <input type="number" name="ADS_Sensitivity" value="80" min="1" max="200">
+                    </div>
+                    <div class="config-item">
+                        <label>Aim Assist</label>
+                        <select name="Aim_Assist">
+                            <option value="Off">Off</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Strong" selected>Strong</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Snap To Target</label>
+                        <select name="Snap_To_Target">
+                            <option value="Off">Off</option>
+                            <option value="On" selected>On</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Headshot Priority</label>
+                        <select name="Headshot_Priority">
+                            <option value="Off">Off</option>
+                            <option value="On" selected>On</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Aim Speed Multiplier</label>
+                        <input type="text" name="Aim_Speed_Multiplier" value="2.0x">
+                    </div>
                 </div>
             </div>
             
             <!-- MOVEMENT TAB -->
             <div class="tab-content" id="movement">
-                <div class="config-item">
-                    <label>Movement Speed</label>
-                    <select name="Movement_Speed">
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                        <option value="Max" selected>Max</option>
-                    </select>
-                </div>
-                <div class="config-item">
-                    <label>Sprint Speed</label>
-                    <input type="text" name="Sprint_Speed" value="1.5x">
-                </div>
-                <div class="config-item">
-                    <label>Bunny Hop</label>
-                    <select name="Bunny_Hop">
-                        <option value="Disabled">Disabled</option>
-                        <option value="Enabled" selected>Enabled</option>
-                    </select>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <label>Movement Speed</label>
+                        <select name="Movement_Speed">
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Max" selected>Max</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Sprint Speed</label>
+                        <input type="text" name="Sprint_Speed" value="1.5x">
+                    </div>
+                    <div class="config-item">
+                        <label>Bunny Hop</label>
+                        <select name="Bunny_Hop">
+                            <option value="Disabled">Disabled</option>
+                            <option value="Enabled" selected>Enabled</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Slide Cancel</label>
+                        <select name="Slide_Cancel">
+                            <option value="Off">Off</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Perfect_Timing" selected>Perfect Timing</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             
             <!-- GRAPHICS TAB -->
             <div class="tab-content" id="graphics">
-                <div class="config-item">
-                    <label>FPS Limit</label>
-                    <select name="FPS_Limit">
-                        <option value="60">60 FPS</option>
-                        <option value="90" selected>90 FPS</option>
-                        <option value="120">120 FPS</option>
-                    </select>
-                </div>
-                <div class="config-item">
-                    <label>Graphics Quality</label>
-                    <select name="Graphics_Quality">
-                        <option value="Low" selected>Low (Best FPS)</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                    </select>
-                </div>
-                <div class="config-item">
-                    <label>Shadows</label>
-                    <select name="Shadow_Quality">
-                        <option value="Off" selected>Off</option>
-                        <option value="Low">Low</option>
-                        <option value="High">High</option>
-                    </select>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <label>FPS Limit</label>
+                        <select name="FPS_Limit">
+                            <option value="60">60 FPS</option>
+                            <option value="90" selected>90 FPS</option>
+                            <option value="120">120 FPS</option>
+                            <option value="144">144 FPS</option>
+                            <option value="Unlimited">Unlimited</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Graphics Quality</label>
+                        <select name="Graphics_Quality">
+                            <option value="Low" selected>Low (Best FPS)</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                            <option value="Max">Max</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Shadows</label>
+                        <select name="Shadow_Quality">
+                            <option value="Off" selected>Off</option>
+                            <option value="Low">Low</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Anti-Aliasing</label>
+                        <select name="Anti_Aliasing">
+                            <option value="Off" selected>Off</option>
+                            <option value="2x">2x</option>
+                            <option value="4x">4x</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             
             <!-- NETWORK TAB -->
             <div class="tab-content" id="network">
-                <div class="config-item">
-                    <label>Lag Compensation</label>
-                    <select name="Lag_Compensation">
-                        <option value="Off">Off</option>
-                        <option value="Normal">Normal</option>
-                        <option value="Aggressive" selected>Aggressive</option>
-                    </select>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <label>Lag Compensation</label>
+                        <select name="Lag_Compensation">
+                            <option value="Off">Off</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Aggressive" selected>Aggressive</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Ping Stabilization</label>
+                        <select name="Ping_Stabilization">
+                            <option value="Off">Off</option>
+                            <option value="On" selected>On</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Preferred Server</label>
+                        <select name="Preferred_Server">
+                            <option value="Auto_Best" selected>Auto Best</option>
+                            <option value="Manual">Manual</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="config-item">
-                    <label>Ping Stabilization</label>
-                    <select name="Ping_Stabilization">
-                        <option value="Off">Off</option>
-                        <option value="On" selected>On</option>
-                    </select>
+            </div>
+            
+            <!-- ADVANCED TAB -->
+            <div class="tab-content" id="advanced">
+                <div class="config-grid">
+                    <div class="config-item">
+                        <label>Enemy Outline</label>
+                        <select name="Enemy_Outline">
+                            <option value="Off">Off</option>
+                            <option value="On" selected>On</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Auto Run</label>
+                        <select name="Auto_Run">
+                            <option value="Off">Off</option>
+                            <option value="On" selected>On</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Recoil Reduction</label>
+                        <select name="Recoil_Reduction">
+                            <option value="Off">Off</option>
+                            <option value="On" selected>On</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Gyro Enabled</label>
+                        <select name="Gyro_Enabled">
+                            <option value="Off">Off</option>
+                            <option value="On" selected>On</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             
             <div class="action-buttons">
-                <button type="button" class="btn btn-success" onclick="applyAll()">⚡ Apply All</button>
-                <button type="button" class="btn btn-warning" onclick="downloadConfig()">📦 Download Config</button>
+                <button type="submit" class="btn btn-primary">💾 Save Config</button>
+                <button type="button" class="btn btn-success" onclick="applyAll()">⚡ Apply All Optimizations</button>
+                <button type="button" class="btn btn-warning" onclick="exportZIP()" style="background: linear-gradient(135deg, #ffd93d, #ff6b6b); font-size: 1.2em; padding: 18px 35px;">📦 Download ZIP (All Formats)</button>
+                <button type="button" class="btn btn-info" onclick="exportConfig()">📤 Export JSON Only</button>
+                <button type="button" class="btn btn-info" onclick="importConfig()">📥 Import Config</button>
             </div>
             
             <div id="status"></div>
         </form>
     </div>
     
-    <script src="app.js"></script>
+    <script src="config.js"></script>
 </body>
 </html>
 
