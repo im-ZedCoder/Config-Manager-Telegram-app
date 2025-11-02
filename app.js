@@ -25,6 +25,14 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(targetTab).classList.add('active');
         });
     });
+    
+    // Initialize Telegram Web App
+    if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+        console.log('Telegram Web App initialized');
+    }
 });
 
 // Config Manager Class
@@ -427,4 +435,3 @@ document.getElementById('configForm').addEventListener('change', function(e) {
 
 console.log('🎮 CODM Config Manager loaded by Nulltra Coder');
 console.log('📦 ZIP export with password support enabled');
-
